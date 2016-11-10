@@ -11,5 +11,5 @@ require_once("connect.php");	// instantiates $database
 // remove active session hash from DB
 EndSession($database);
 // redirect to login page
-header('Location: ../index.html#page=home');
+header('Location: ../home.html');
 ?>

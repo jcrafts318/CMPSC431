@@ -9,12 +9,8 @@ require_once("coconut_lib.php");
 require_once("connect.php");
 
 session_start();
-if (VerifySession($database))
+if (VerifySession($database))	// if session token is valid for this user, echo true
 {
 	echo HasSeller($database, $_COOKIE['email']);
-}
-else
-{
-	header('Location: ../index.html#page=session_error');
 }
 ?>

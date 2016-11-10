@@ -32,11 +32,11 @@ if (!$isValidEmail || !$isValidPassword || !$isConfirmedPassword ||
 		$_POST['city'], $_POST['state'], 
 		$_POST['zip'], $_POST['register_password']))
 {
-	header('Location: ../index.html#page=register_error');
+	header('Location: ../register_error.html');
 }
 // if all validation variables pass and user creation succeeds, redirect to confirm page
 else
 {
-	header('Location: ../index.html#page=user_created') ;
+	header('Location: ../user_created.html') ;
 }
 ?>

@@ -20,10 +20,10 @@ if ($auth === TRUE)		// if authentication passes with supplied credentials, inst
 	session_start();
 	InitiateSession($database, $email);
 	// redirect to homepage (acts as login page if not logged in, ow project submission page)
-	header('Location: ../index.html#page=home') ;
+	header('Location: ../home.html') ;
 }
 else				// if login fails entirely, redirect to login error page
 {
-	header('Location: ../index.html#page=login_error');
+	header('Location: ../login_error.html');
 }
 ?>

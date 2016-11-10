@@ -12,10 +12,10 @@ session_start();
 if (VerifySession($database))	// if session token is valid for this user, echo true
 {
 	CreateSeller($database, $_COOKIE['email']);
-	header('Location: ../index.html#page=home');
+	header('Location: ../home.html');
 }
 else				// if session token is invalid, echo false
 {
-	header('Location: ../index.html#page=session_error');
+	header('Location: ../session_error.html');
 }
 ?>
