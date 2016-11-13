@@ -27,8 +27,8 @@ body {
 
 #toolbar {
 	position: absolute;
-	top: 30%;
-	left: 35%;
+	top: 60%;
+	left: 5%;
 	width: 60%;
 	height: 40%;
 }
@@ -64,14 +64,14 @@ h2 {
 	top: 0%;
 	left: 0;
 	width: 100%;
-	height: 20%;
+	height: 15%;
 }
 
 #left, #right {
 	width: 40%;
 	height: 50%;
 	position: absolute;
-	top: 20%;
+	top: 15%;
 	overflow-y: auto;
 }
 
@@ -85,12 +85,41 @@ h2 {
 
 #footer {
 	position: absolute;
-	top: 70%;
+	top: 60%;
 	left: 0;
 	width: 100%;
-	height: 30%;
+	height: 35%;
+	overflow-y: auto;
 }
 
+#left-sidebar, #middle, #right-sidebar {
+	height: 100%;
+	position: absolute;
+	top: 0;
+	text-align: center;
+}
+
+#left-sidebar, #right-sidebar {
+	background-color: #227;
+	overflow: hidden;
+	width: 15%;
+}
+
+#left-sidebar {
+	border-right: 2px solid black;
+	left: 0;
+}
+
+#right-sidebar {
+	border-left: 2px solid black;
+	left: 85%;
+}
+
+#middle {
+	width: 70%;
+	left: 15%;
+	overflow-y: auto;
+}
 .submit, .resend {
 	width: 40%;
 	height: 40%;

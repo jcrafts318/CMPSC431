@@ -7,7 +7,60 @@
 
 require_once("auth_lib.php");
 
+function GetParentCategory($database, $category)
+// PRE:  $database is an open database connection
+//       $category is the name of a category which is not 'All'
+// POST: FCTVAL == json encoding of an array of categories which are children of $parent
+{
+	$query = "SELECT parent FROM categories WHERE name='$category'";
+	$result = MySqlDatabaseQuery($database, $query);
+
+	return $result[0]['parent'];
+}
+
+function GetCategories($database, $parent)
+// PRE:  $database is an open database connection
+//       $parent is the name of a category (base category being 'All')
+// POST: FCTVAL == json encoding of an array of categories which are children of $parent
+{
+	$query = "SELECT name FROM categories WHERE parent='$parent'";
+	$result = MySqlDatabaseQuery($database, $query);
+	$output = array();
+	foreach ($result as $res)
+	{
+		array_push($output, $res['name']);
+	}
+	return json_encode($output);
+}
+
+function UserData($database, $email)
+// PRE:  $database is an open database connection
+//       $email is the email address of a user
+// POST: FCTVAL == json encoding of an object with all data relevant to this user profile not explicitly associated
+//       with a customer or seller (comments, address, dob, phone, etc.)
+{
+	$output = new \stdClass;
+	$query = "SELECT E.name, E.dob, E.phone, A.street, A.city, A.state, A.zip FROM users E JOIN addresses A ON E.address_id = A.address_id WHERE E.email='$email'";
+	$result = MySqlDatabaseQuery($database, $query);
+
+	$output->name = $result[0]['name'];
+	$output->email = $email;
+	$output->dob = $result[0]['dob'];
+	$output->address = new \stdClass;
+	$output->address->street = $result[0]['street'];
+	$output->address->city = $result[0]['city'];
+	$output->address->state = $result[0]['state'];
+	$output->address->zip = $result[0]['zip'];
+	$output->phone = $result[0]['phone'];
+
+	return json_encode($output);
+}
+
 function HasSeller($database, $email)
+// PRE:  $database is an open database connection
+//       $email is the email address of a user
+// POST: FCTVAL == json encoding of an object with a "retval" indicating if a seller record exists for this user,
+//       and relevant data accompanying that if the record exists
 {
 	$output = new \stdClass;
 	$query = "SELECT user_id FROM users WHERE email='$email'";
@@ -33,6 +86,10 @@ function HasSeller($database, $email)
 }
 
 function HasCustomer($database, $email)
+// PRE:  $database is an open database connection
+//       $email is the email address of a user
+// POST: FCTVAL == json encoding of an object with a "retval" indicating if a customer record exists for this user,
+//       and relevant data accompanying that if the record exists
 {
 	$output = new \stdClass;
 	$query = "SELECT user_id FROM users WHERE email='$email'";
@@ -63,6 +120,9 @@ function HasCustomer($database, $email)
 }
 
 function CreateSeller($database, $email)
+// PRE:  $database is an open database connection
+//       $email is the email address of a user
+// POST: a seller record is created for this user
 {
 	$query = "SELECT user_id FROM users WHERE email='$email'";
 	$result = MySqlDatabaseQuery($database, $query);
@@ -72,6 +132,9 @@ function CreateSeller($database, $email)
 }
 
 function CreateCustomer($database, $email)
+// PRE:  $database is an open database connection
+//       $email is the email address of a user
+// POST: a customer record is created for this user
 {
 	$query = "SELECT user_id FROM users WHERE email='$email'";
 	$result = MySqlDatabaseQuery($database, $query);
