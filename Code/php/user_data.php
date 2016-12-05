@@ -11,7 +11,7 @@ require_once("connect.php");
 session_start();
 if (VerifySession($database))
 {
-	echo UserData($database, $_COOKIE['email']);
+	echo json_encode(UserData($database, $_COOKIE['email']));
 }
 else
 {

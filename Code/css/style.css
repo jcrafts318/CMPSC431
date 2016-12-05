@@ -51,7 +51,7 @@ h1 {
 	color: #efe;
 }
 
-p, h1, h2 {
+p, h1, h2, h3, h5 {
 	font-family: 'Montserrat', sans-serif;
 }
 
@@ -119,7 +119,32 @@ h2 {
 	width: 70%;
 	left: 15%;
 	overflow-y: auto;
+	margin-top:5%;
+	height: 80%;
 }
+
+#transaction-left, #transaction-right {
+	position: absolute;
+	top: 10%;
+	margin: 0 2.5% 0 2.5%;
+	border-top: 2px solid;
+	width: 45%;
+}
+
+#transaction-right {
+	border-left: 2px solid;
+	left: 50%;
+}
+
+#transaction-left {
+	border-right: 2px solid;
+	left: 0%;
+}
+
+[id$=-sidebar] > h3, [id$=-sidebar] > p {
+	color: #efe;
+}
+
 .submit, .resend {
 	width: 40%;
 	height: 40%;
@@ -133,4 +158,22 @@ h2 {
 
 .submit {
 	top: 20%;
+}
+
+[id^=listing-] > h5, [id^=comments-] > h5 {
+	margin: 0;
+}
+
+[id^=listing-] {
+	vertical-align:text-top;
+	-webkit-column-count: 2; /* Chrome, Safari, Opera */
+	-moz-column-count: 2; /* Firefox */
+	column-count: 2;
+	width: 100%;
+}
+
+.divider {
+	width: 100%;
+	height: 2px;
+	background-color: black;
 }

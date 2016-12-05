@@ -1,0 +1,37 @@
+How It Works:
+-Website is single page which has content created by single javascript file, depending on context supplied by arguments in the url
+-Url arguments decide page and other context specific arguments (e.g. browsing criteria)
+-Server calls are AJAX calls to small php scripts. The php library is driven by auth_lib.php and coconut_lib.php. All of the code talks to a mysql database.
+-A user of the website is created by supplying required info (address, phone, dob, name, email, etc.) and a password.
+-Once a user is created and that user logs in, they can register as a customer, a seller, or both.
+-A user that is registered as a seller can add new listings. A listing can be an auction, a direct sale, or both (a 'dual' listing).
+-An auction has a reserve price and has bids associated with it. A sale listing has a list price associated with it. A dual listing has both.
+-Front page (default page) allows the user to browse listings
+-Users can browse by category, by seller, or search for specific keywords
+-The listings shown are decided server side, by sending the url arguments to the server and returning a list of only listing ids that match those arguments (in the case of search, these are ranked by the number of times a keyword gets a 'hit' in either the name or category of a listing). When the list of ids is received, complete data for a subset of that list will be fetched depending on the "browse page" (for example browse page 2 will show listings 11 through 20).
+-When browsing listings, some options are offered to logged in users that do not appear if not logged in:
+-Every listing has a comments section that can be viewed, even if not logged in. If a user is logged in, they can add a comment themselves.
+-A user registered as a customer can make bids on an auction or dual listing (automatically adding it to the watch list), and they can add sale or dual listings to their shopping cart.
+-From the watch list, the customer user can click a button on the right to "clear" the watch list. This means that any listings that have ended will be removed from the watch list. If the customer user has won the item, then a new transaction is created for that item at the value of the winning bid. Otherwise, it is simply removed.
+-From the shopping cart, the customer user can click a button on the right to "checkout". This means that any listings in the shopping cart will be removed and have transactions created for them at their list prices.
+-When clearing the watch list or checking out from the shopping cart, the user is redirected to the transactions page. Here a user is given a summary of all of their current and past transactions as both seller and customer.
+-When a new transaction is created, it is defaulted to the "unpaid" status. It will remain that way until the customer of the transaction makes payment. To do this, the customer must go to the transactions page and either add new payment info or select previously saved info and confirm the saved security code. Doing this will make payment on all unpaid transactions for that customer user.
+-Once the customer user has made payment, it is up to the seller to mark the transaction as shipped. Once the item has been shipped, the customer can mark the transaction as delivered when they receive their item. When the transaction is marked as delivered, it is considered completed, and can be rated by both the customer and seller. The customer's rating will be averaged into the ratings for the seller and the listing, while the seller's rating will be averaged into the ratings for the customer.
+-Order report and transaction summary is at the top of each section of the transactions page.
+
+Things to know for interacting with the site:
+-bidding is still broken as of right now. I had it set up as $5 increments, but I want to change it to a text box, that will make it easier to deal with the reserve price and how a user wins an auction. This will be done soon.
+-rating has some bugs, but seems to work most of the time. Should also be fixed soon.
+-any dates you put in (like dob, or payment expiration date) have to be in 'yyyy-mm-dd' format, otherwise mysql won't accept them. I know credit card expiration dates are just to the month, but pretend they're to the day, it makes it easier.
+-the back button doesn't work because of the single page architecture. The application is small so this isn't really an issue. Click the links in the page to navigate.
+-there is no input validation on anything right now. It should all work if you put in reasonable input though.
+-ratings are between 1 and 5
+-passwords have to be at least 10 characters
+-everything was tested with users that were both customers and sellers. For best results I recommend registering as both. This is our best bet for the demo.
+
+Things to make light of to make us look good:
+-large overhead db queries are minimized by pulling a list of ids that match the browsing criteria and then pulling full data for just a subset of them (pagination is data level and not just interface level)
+-search is dope as fuck, listing ids are ranked based on how many times a search term shows up in the name or category of a listing. For example, if you searched "big brown bicycle", 6 queries would be made, in which the word "big" is searched for in listing names, then in listing categories, then "brown" in names, then categories, and so on. The number of times a listing comes up in the result set is its "score", so listings that match most closely to your search terms will be ranked higher. I recommend adding a bunch of similar items so that you can show off the search improving your results with more specificity.
+-security, as before, is a big plus for us. The user authentication model is really solid and worth talking about. Security on our api calls is shit, but this was quick and dirty and that's okay.
+-comments work really well and are worth showing off.
+-watch list and shopping cart I think are bonus features for us, also worth showing off, but this will happen in just showing the checkout workflow.

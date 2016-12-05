@@ -11,7 +11,7 @@ require_once("connect.php");
 session_start();
 if (VerifySession($database))
 {
-	echo HasSeller($database, $_COOKIE['email']);
+	echo json_encode(HasSeller($database, $_COOKIE['email']));
 }
 else
 {
