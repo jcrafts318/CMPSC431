@@ -12,7 +12,7 @@ session_start();
 if (VerifySession($database))	// if session token is valid for this user, echo true
 {
 	// TODO: fix the massive security hole, any person can arbitrarily add an item to any customer's cart or watch list if they have their id and they are logged in
-	PlaceBid($database, $_GET['cust'], $_GET['item_id']);
+	PlaceBid($database, $_GET['cust'], $_GET['item_id'], $_GET['bid']);
 	AddToWatchList($database, $_GET['cust'], $_GET['item_id']);
 	echo 'true';
 }

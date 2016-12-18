@@ -605,7 +605,7 @@ function AddToShoppingCart($database, $custId, $listingId)
 	MySqlDatabaseQuery($database, $query);
 }
 
-function PlaceBid($database, $custId, $listingId)
+function PlaceBid($database, $custId, $listingId, $bid)
 {
 	$listing = GetListing($database, $listingId);
 	if ($listing->bids == "none")
@@ -616,7 +616,7 @@ function PlaceBid($database, $custId, $listingId)
 	{
 		$highBid = $listing->bids->highBidder->bid;
 	}
-	$newBid = $highBid + 5;
+	$newBid = $bid;
 	$time = date('Y-m-d H:i:s', time());
 	$query = "SELECT active FROM listings WHERE item_id='$listingId'";
 	$result = MySqlDatabaseQuery($database, $query);
@@ -650,6 +650,8 @@ function Checkout($database, $custId)
 		$listing = GetListing($database, $id);
 		NewTransaction($database, $custId, $res['item_id'], $listing->listPrice);
 		$query = "DELETE FROM shopping_cart WHERE cust_id='$custId' AND item_id='$id'";
+		MySqlDatabaseQuery($database, $query);
+		$query = "UPDATE listings SET active=0 WHERE item_id='$id' AND list_type='dual'";
 		MySqlDatabaseQuery($database, $query);
 	}
 }
@@ -707,7 +709,7 @@ function MarkAsDelivered($database, $transactionId)
 
 function RateAsCustomer($database, $rating, $transactionId)
 {
-	$query = "SELECT L.seller_id, T.cust_id, T.item_id FROM listings L JOIN transactions T ON L.item_id=T.item_id";
+	$query = "SELECT L.seller_id, T.cust_id, T.item_id FROM listings L JOIN transactions T ON L.item_id=T.item_id WHERE transaction_id='$transactionId'";
 	$result = MySqlDatabaseQuery($database, $query);
 	$seller = $result[0]['seller_id'];
 	$item = $result[0]['item_id'];
@@ -729,7 +731,7 @@ function RateAsCustomer($database, $rating, $transactionId)
 
 function RateAsSeller($database, $rating, $transactionId)
 {
-	$query = "SELECT L.seller_id, T.cust_id, T.item_id FROM listings L JOIN transactions T ON L.item_id=T.item_id";
+	$query = "SELECT L.seller_id, T.cust_id, T.item_id FROM listings L JOIN transactions T ON L.item_id=T.item_id WHERE transaction_id='$transactionId'";
 	$result = MySqlDatabaseQuery($database, $query);
 	$customer = $result[0]['cust_id'];
 	$item = $result[0]['item_id'];
@@ -763,7 +765,7 @@ function CreateCustomer($database, $email)
 	$query = "SELECT user_id FROM users WHERE email='$email'";
 	$result = MySqlDatabaseQuery($database, $query);
 	$id = $result[0]['user_id'];
-	$query = "INSERT INTO customers SET user_id='$id', royalty_points=0, royalty_days_remaining=0, avg_rating=0, num_ratings=0";
+	$query = "INSERT INTO customers SET user_id='$id', avg_rating=0, num_ratings=0";
 	MySqlDatabaseQuery($database, $query);
 }
 ?>

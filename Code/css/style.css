@@ -93,16 +93,18 @@ h2 {
 }
 
 #left-sidebar, #middle, #right-sidebar {
-	height: 100%;
 	position: absolute;
 	top: 0;
 	text-align: center;
+	height: 100%;
 }
 
 #left-sidebar, #right-sidebar {
 	background-color: #227;
-	overflow: hidden;
+	overflow: auto;
 	width: 15%;
+	padding-bottom:5%;
+	height: 95%;
 }
 
 #left-sidebar {

@@ -9,7 +9,7 @@ require_once("auth_lib.php");
 require_once("connect.php");	// instantiates $database
 
 // validate registration fields
-$isValidEmail = preg_match('/[a-z0-9\(\)\.]+\@[a-z0-9]+\.[a-z]{2,8}/i', $_POST['email']);				// must be abc####@psu.edu email
+$isValidEmail = preg_match('/[a-z0-9\(\)\.]+\@[a-z0-9]+\.[a-z]{2,8}/i', $_POST['email']);				// must be abc@thing.tld
 //$isValidName = preg_match('/[a-z0-9]{10,}/i', $_POST['name']);							// must be at least 10 alphanumeric characters
 //$isValidDob = preg_match('/([0-9]{4})\-([0-9]{2})\-([0-9]{2})/i', $_POST['dob'], $match);			// match pattern
 //$isValidDob = $isValidDob && (int)$match[1] < 1998 && (int)match[1] > 1898 &&					// match bounds

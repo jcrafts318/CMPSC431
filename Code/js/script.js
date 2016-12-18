@@ -453,7 +453,7 @@ function RegisterLoginPrompt()
 		'<p>Zip Code</p><input type="text" name="zip" required/>' +
 		'<p>Password</p><input type="password" name="register_password" required/>' +
 		'<p>Confirm Password</p><input type="password" name="confirm_password" required/></br>' +
-		'<input type="submit" value="Register" /></form>';
+		'<input type="submit" value="Register" /></form></br></br>';
 	// empty footer
 	document.getElementById("footer").innerHTML = '';
 }
@@ -472,8 +472,7 @@ function UserDashboard()
 		'<p>Name: ' + user.name + '</p>' +
 		'<p>Date of Birth: ' + user.dob + '</p>' +
 		'<p>Address: ' + user.address.street + ', ' + user.address.city + ', ' + user.address.state + ' ' + user.address.zip + '</p>' +
-		'<p>Phone Number: ' + user.phone + '</p></br>' +
-		CommentHistoryButton();
+		'<p>Phone Number: ' + user.phone + '</p>';
 }
 
 function DisplayCustomer()
@@ -770,7 +769,7 @@ function PayWithInput()
 function PopulateListingsFront()
 {
 	var markup = "";
-	markup += '<h3>Showing listings ' + ((Number(args.browse_page)-1)*10+1) + ' through ' + Math.min(Number(args.browse_page)*10, listings.ids.length)  + ' of ' + listings.ids.length + '</h3>';
+	markup += '<h3>Showing listings ' + Math.min(listings.ids.length, ((Number(args.browse_page)-1)*10+1)) + ' through ' + Math.min(Number(args.browse_page)*10, listings.ids.length)  + ' of ' + listings.ids.length + '</h3>';
 	for (var i = (Number(args.browse_page)-1)*10; i < (Number(args.browse_page))*10 && i < listings.ids.length; i++)
 	{
 		markup += ListingBox(listings.ids[i]);
@@ -786,14 +785,27 @@ function PopulateListingsFront()
 			addlArgs += "&" + Object.keys(args)[i] + "=" + args[Object.keys(args)[i]];
 		}
 	}
+	markup += '<span style="display:inline;">';
 	if (args.browse_page > 1)
 	{
-		markup += '<button onclick=\'Redirect("' + args.page + '", "' + addlArgs + '&browse_page=' + (Number(args.browse_page)-1) + '");\'>previous page</button>'
+		markup += '<button onclick=\'Redirect("' + args.page + '", "' + addlArgs + '&browse_page=' + (Number(args.browse_page)-1) + '");\'>previous page</button>';
+	}
+	for (var i = 1; i <= (listings.ids.length / 10) + 1; i++)
+	{
+		if (args.browse_page==i)
+		{
+			markup += '<h5 style="display:inline;"> ' + i + ' </h5>';
+		}
+		else
+		{
+			markup += '<button onclick=\'Redirect("' + args.page + '", "' + addlArgs + '&browse_page=' + i + '");\'>'+ i +'</button>';
+		}
 	}
 	if (args.browse_page*10 < listings.ids.length)
 	{
-		markup += '<button onclick=\'Redirect("' + args.page + '", "' + addlArgs + '&browse_page=' + (Number(args.browse_page)+1) + '");\'>next page</button>'
+		markup += '<button onclick=\'Redirect("' + args.page + '", "' + addlArgs + '&browse_page=' + (Number(args.browse_page)+1) + '");\'>next page</button>';
 	}
+	markup += '</span>';
 
 	document.getElementById("middle").innerHTML = markup;
 }
@@ -830,11 +842,8 @@ function ListingActionButtons(listing)
 					output += '<h5>Item already in watch list    </h5>';
 				}
 			}
-			if (listing.bids == "none" || listing.bids.highBidder.id != customer.id)
-			{
-				output += '<button onclick=\'PlaceBidWrapper("' + listing.id + '")\'>Place Bid (high bid +$5)</button>';
-			}
-			else
+			output += '<textarea cols="7" rows="1" id="bid-field-' + listing.id + '"></textarea><button onclick=\'PlaceBidWrapper("' + listing.id + '")\'>Place Bid</button>';
+			if (listing.bids != "none" && listing.bids.highBidder.id == customer.id)
 			{
 				output += '<h5>You have the current high bid</h5>';
 			}
@@ -987,7 +996,7 @@ function CategoryButtons()
 	// preserve other arguments
 	for (var i in Object.keys(args))
 	{
-		if (Object.keys(args)[i] != "page" && Object.keys(args)[i] != "cat" && Object.keys(args)[i] != "")
+		if (Object.keys(args)[i] != "page" && Object.keys(args)[i] != "cat" && Object.keys(args)[i] != "" && Object.keys(args)[i] != "browse_page")
 		{
 			addlArgs += "&" + Object.keys(args)[i] + "=" + args[Object.keys(args)[i]];
 		}
@@ -1220,7 +1229,7 @@ function GetListing(id)
 
 function GetListingsData()
 {
-	$.when(GetListingIds(args.cat,args.search,args.list_type,args.seller_id)).done(function(data)
+	$.when(GetListingIds(args.cat,args.search,args.list_type,args.seller)).done(function(data)
 	{
 		listings.ids = data;
 		if (!('browse_page' in args))
@@ -1420,8 +1429,9 @@ function PlaceBid(id)
 // PRE:  id is a listing id of an auction listing
 // POST: a bid is placed on the item
 {
+	var bid = document.getElementById("bid-field-" + id).value;
 	return $.ajax({                                      
-		url: "php/place_bid.php?cust=" + customer.id + "&item_id=" + id,
+		url: "php/place_bid.php?cust=" + customer.id + "&item_id=" + id + "&bid=" + bid,
 		dataType: "text"
 	});
 }
